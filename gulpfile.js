@@ -1,33 +1,35 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
-let cleanCSS = require('gulp-clean-css');
+var cleanCSS = require('gulp-clean-css');
 var sourcemaps = require('gulp-sourcemaps');
-var browserSync = require("browser-sync");
-var scssPath = "src/styles/**/*.scss";
+var browserSync = require('browser-sync');
+var rename = require('gulp-rename');
 
-gulp.task('sass', function () {
-    return gulp.src(scssPath)
-    .pipe(sourcemaps.init())
-      .pipe(sass().on('error', sass.logError))
-      .pipe(cleanCSS({compatibility: 'ie8'}))
-      .pipe(autoprefixer({
-          browsers: ['last 2 versions'],
-          cascade: false
-      }))
-      .pipe(gulp.dest('build/styles/css'));
-  });
+
+var scssPath = 'src/styles/**/*.scss';
+var build = './build/';
+
+// Minify, Prefix, Sourcemaps, Browser sync, Rename
+gulp.task('sass',function(){
+  gulp.src(scssPath)
+      .pipe(sourcemaps.init())
+          .pipe(sass())
+          .pipe(autoprefixer())
+          .pipe(rename({basename: 'style'}))
+          .pipe(cleanCSS())
+          .pipe(rename({suffix: '.min'}))
+      .pipe(sourcemaps.write('.'))
+      .pipe(gulp.dest(build + '/styles/css/'))
+      .pipe(browserSync.stream());
+});
    
-  gulp.task('sass:watch', function () {
-    gulp.watch(scssPath, ['sass']);
-  });
 
-
-gulp.task("serve", ["sass"], function() {
+  gulp.task('build',function(){
     browserSync.init({
-      server: ".",
-      port: 3000
-    });
-    gulp.watch(scssPath, ["sass"]).on("change", browserSync.reload);
-    gulp.watch("*.html").on("change", browserSync.reload);
-  });
+        server: './build'
+    })
+    gulp.watch([build + '*.html'],['html']);
+    gulp.watch([scssPath],['sass']);
+
+});
