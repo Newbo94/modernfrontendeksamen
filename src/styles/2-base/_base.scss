@@ -1,6 +1,7 @@
 //Paragraph & Titles
-$base-paragraph: Arial, Helvetica, sans-serif;
-$base-heading: Arial, Helvectica, sans-serif;
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto');
+$base-paragraph: 'Montserrat', sans-serif;
+$base-heading: 'Roboto', sans-serif;
 
 //Colors
 $font-color: #575153;
@@ -12,4 +13,5 @@ $primary-bg: #fff;
 
 body {
     font-family: $base-paragraph;
+    
 }
